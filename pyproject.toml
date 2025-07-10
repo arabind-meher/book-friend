@@ -1,0 +1,7 @@
+[project]
+name = "book-friend"
+version = "0.1.0"
+description = "A Sentiment-Based Book Analysis and Personalized Recommendation System"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
