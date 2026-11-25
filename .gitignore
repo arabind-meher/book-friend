@@ -1,0 +1,33 @@
+# --- Private (never public) ---
+CLAUDE.md
+private/
+
+# --- Secrets / environment ---
+.env
+.env.*
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+
+# --- Django ---
+staticfiles/
+media/
+*.sqlite3
+
+# --- Tooling caches ---
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# --- Raw API data (local only, never in repo) ---
+data/
+
+# --- IDE / OS ---
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
