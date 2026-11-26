@@ -16,10 +16,10 @@ def check_database():
 
 def check_redis():
     try:
-        client = redis.Redis.from_url(
+        with redis.Redis.from_url(
             settings.REDIS_URL, socket_connect_timeout=2, socket_timeout=2
-        )
-        client.ping()
+        ) as client:
+            client.ping()
     except redis.RedisError:
         return False
     return True
