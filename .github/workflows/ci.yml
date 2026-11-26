@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:19-alpine
+        env:
+          POSTGRES_DB: bookfriend
+          POSTGRES_USER: bookfriend
+          POSTGRES_PASSWORD: bookfriend
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U bookfriend -d bookfriend"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+
+      redis:
+        image: redis:8-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+
+    env:
+      SECRET_KEY: ci-only-insecure-secret-key
+      DEBUG: "False"
+      ALLOWED_HOSTS: localhost
+      DATABASE_URL: postgres://bookfriend:bookfriend@localhost:5432/bookfriend
+      REDIS_URL: redis://localhost:6379/0
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.13.10"
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Check formatting
+        run: uv run ruff format --check .
+
+      - name: Run tests
+        run: uv run pytest
