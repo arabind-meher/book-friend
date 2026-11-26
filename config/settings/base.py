@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_rq",
 ]
 
 MIDDLEWARE = [
@@ -79,6 +80,15 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {"default": env.db("DATABASE_URL")}
 
 REDIS_URL = env("REDIS_URL")
+
+RQ_QUEUES = {
+    "default": {
+        "URL": REDIS_URL,
+        "DEFAULT_TIMEOUT": 360,
+    },
+}
+
+RQ_SHOW_ADMIN_LINK = True
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
